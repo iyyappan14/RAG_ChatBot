@@ -12,8 +12,6 @@ export default function Header() {
           </div>
           <nav className="flex space-x-2">
             <a href="#" className="text-white hover:text-white/80 px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
-            <a href="#" className="text-white/70 hover:text-white px-3 py-2 rounded-md text-sm font-medium">History</a>
-            <a href="#" className="text-white/70 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Settings</a>
             <a href="#" className="bg-primary text-white hover:bg-primary/90 px-4 py-2 rounded-md text-sm font-medium ml-2">Login</a>
           </nav>
         </div>
