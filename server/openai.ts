@@ -250,11 +250,64 @@ export async function analyzeDocument(documentText: string, query?: string): Pro
  * Get mock document analysis when API is unavailable
  */
 function getMockDocumentAnalysis(documentText: string, query?: string): string {
-  const documentPreview = documentText.substring(0, 50) + (documentText.length > 50 ? '...' : '');
+  const documentPreview = documentText.substring(0, 100) + (documentText.length > 100 ? '...' : '');
+  
+  // Log for debugging
+  console.log('Document analysis query:', query);
+  console.log('Document preview:', documentPreview);
   
   if (query) {
-    return `Document analysis for query: "${query}"\n\nBased on the provided document (starting with "${documentPreview}"), this appears to be related to Islamic banking. The document contains information that might be relevant to your query.\n\nHere's a summary of key points regarding your question:\n\n1. The document contains information related to Islamic banking and financial practices.\n2. Islamic banking follows Shariah principles and prohibits interest (riba).\n3. This document might reference specific financial instruments or contracts relevant to Islamic banking.\n\n(Note: This is a demo response while OpenAI API integration is being set up)`;
+    // Process the query to provide a more specific response
+    const queryLower = query.toLowerCase();
+    
+    // Try to extract information from the document that might be relevant to the query
+    let specificResponse = '';
+    
+    if (queryLower.includes('title') || queryLower.includes('name') || queryLower.includes('what is')) {
+      // Look for potential title patterns in the document
+      const titleMatch = documentText.match(/title[:\s]+(.*?)(?:\n|\.)/i) || 
+                        documentText.match(/^(.*?)(?:\n|\.)/i) ||
+                        documentText.match(/name[:\s]+(.*?)(?:\n|\.)/i);
+      
+      if (titleMatch && titleMatch[1]) {
+        specificResponse = `The title appears to be "${titleMatch[1].trim()}".`;
+      } else {
+        specificResponse = `I couldn't identify a specific title in the document. The document begins with: "${documentPreview.substring(0, 50)}..."`;
+      }
+    } else if (queryLower.includes('author') || queryLower.includes('who wrote')) {
+      // Look for author patterns
+      const authorMatch = documentText.match(/author[:\s]+(.*?)(?:\n|\.)/i) || 
+                         documentText.match(/by[:\s]+(.*?)(?:\n|\.)/i);
+      
+      if (authorMatch && authorMatch[1]) {
+        specificResponse = `The author appears to be ${authorMatch[1].trim()}.`;
+      } else {
+        specificResponse = `I couldn't identify a specific author in the document.`;
+      }
+    } else if (queryLower.includes('date') || queryLower.includes('when')) {
+      // Look for date patterns
+      const dateMatch = documentText.match(/date[:\s]+(.*?)(?:\n|\.)/i) || 
+                       documentText.match(/published[:\s]+(.*?)(?:\n|\.)/i) ||
+                       documentText.match(/\d{1,2}\/\d{1,2}\/\d{2,4}/);
+      
+      if (dateMatch && dateMatch[1]) {
+        specificResponse = `The date appears to be ${dateMatch[1].trim()}.`;
+      } else {
+        specificResponse = `I couldn't identify a specific date in the document.`;
+      }
+    }
+    
+    // Add the specific response if available
+    let result = `Document analysis for query: "${query}"\n\n`;
+    
+    if (specificResponse) {
+      result += specificResponse + '\n\n';
+    }
+    
+    result += `Based on the provided document (starting with "${documentPreview.substring(0, 50)}..."), this appears to be related to Islamic banking. The document contains information that might be relevant to your query.\n\nHere's a summary of key points regarding your question:\n\n1. The document contains information related to Islamic banking and financial practices.\n2. Islamic banking follows Shariah principles and prohibits interest (riba).\n3. This document might reference specific financial instruments or contracts relevant to Islamic banking.\n\n(Note: This is a demo response while OpenAI API integration is being set up)`;
+    
+    return result;
   } else {
-    return `Document summary:\n\nThis document (starting with "${documentPreview}") appears to be related to Islamic banking and financial services. The key points include:\n\n1. Information about banking products that comply with Islamic law\n2. References to Shariah-compliant financial practices\n3. Details about banking operations and procedures\n4. Possible references to terms like Murabaha, Sukuk, or Zakat\n\nThe document would be useful for understanding Islamic finance principles and practices within the banking context.\n\n(Note: This is a demo response while OpenAI API integration is being set up)`;
+    return `Document summary:\n\nThis document (starting with "${documentPreview.substring(0, 50)}...") appears to be related to Islamic banking and financial services. The key points include:\n\n1. Information about banking products that comply with Islamic law\n2. References to Shariah-compliant financial practices\n3. Details about banking operations and procedures\n4. Possible references to terms like Murabaha, Sukuk, or Zakat\n\nThe document would be useful for understanding Islamic finance principles and practices within the banking context.\n\n(Note: This is a demo response while OpenAI API integration is being set up)`;
   }
 }
