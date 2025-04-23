@@ -140,7 +140,7 @@ export default function WelcomePage() {
             <p className="text-gray-600 mb-5 flex-grow">
               Upload financial documents and contracts to analyze them with our AI assistant.
             </p>
-            <Link href="/analyze">
+            <Link href="/chat">
               <div className="bg-primary text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary/90 cursor-pointer inline-block">
                 Upload Documents
               </div>
