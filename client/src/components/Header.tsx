@@ -29,19 +29,21 @@ export default function Header({ user, onLogout }: HeaderProps) {
           </div>
           
           <nav className="flex space-x-2 items-center">
-            <div className="relative mr-4">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                <svg className="w-4 h-4 text-white/60" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="11" cy="11" r="8"></circle>
-                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
+            {user?.isLoggedIn && (
+              <div className="relative mr-4">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <svg className="w-4 h-4 text-white/60" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                </div>
+                <input 
+                  type="search" 
+                  className="bg-white/10 border-none text-white text-sm rounded-lg block w-[260px] pl-10 p-2 focus:ring-primary focus:border-primary placeholder-white/60" 
+                  placeholder="Search knowledge base..." 
+                />
               </div>
-              <input 
-                type="search" 
-                className="bg-white/10 border-none text-white text-sm rounded-lg block w-[260px] pl-10 p-2 focus:ring-primary focus:border-primary placeholder-white/60" 
-                placeholder="Search knowledge base..." 
-              />
-            </div>
+            )}
             
             {user?.isLoggedIn ? (
               <div className="relative group">
