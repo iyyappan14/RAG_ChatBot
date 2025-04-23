@@ -2,7 +2,7 @@ import DocumentSection from "@/components/DocumentSection";
 import ChatSection from "@/components/ChatSection";
 import { useState } from "react";
 import { formatFileSize } from "@/lib/utils";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { BiArrowBack } from "react-icons/bi";
 
 export interface UploadedFile {
@@ -66,9 +66,13 @@ export default function DocumentAnalyzer() {
     setActiveResult(null);
   };
   
+  // Get the navigate function from wouter
+  const [_, navigate] = useLocation();
+  
   const handleStartAnalyzing = () => {
     if (uploadedFiles.length > 0) {
-      setCurrentScreen('analyze');
+      // Redirect to the new chat page instead of showing analyze screen
+      navigate('/chat');
     } else {
       alert('Please upload at least one document first');
     }
