@@ -55,46 +55,87 @@ export default function FileUploader({ onFileUpload }: FileUploaderProps) {
     }
   };
   
-  const processFiles = async (fileList: FileList) => {
-    const filePromises = Array.from(fileList).map(async (file) => {
-      // Create a unique ID for the file
-      const id = Date.now().toString() + Math.random().toString(36).substr(2, 9);
-      
-      // Read the file content
-      let content = '';
-      
-      try {
+  const processFiles = (fileList: FileList) => {
+    // Create an array to store file reading promises
+    const filePromises = Array.from(fileList).map(file => {
+      return new Promise<UploadedFile>((resolve) => {
+        // Create a unique ID for the file
+        const id = Date.now().toString() + Math.random().toString(36).substr(2, 9);
+        
+        // Create file reader
+        const reader = new FileReader();
+        
+        // Set up onload callback
+        reader.onload = (e) => {
+          let content = '';
+          
+          if (e.target && e.target.result) {
+            // Handle different file types
+            if (typeof e.target.result === 'string') {
+              content = e.target.result;
+            } else {
+              // For binary data, convert to string
+              const bytes = new Uint8Array(e.target.result);
+              let binary = '';
+              for (let i = 0; i < bytes.byteLength; i++) {
+                binary += String.fromCharCode(bytes[i]);
+              }
+              content = binary;
+            }
+          }
+          
+          resolve({
+            id,
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            content
+          });
+        };
+        
+        // Set up error handling
+        reader.onerror = () => {
+          console.error('Error reading file:', file.name);
+          
+          resolve({
+            id,
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            content: `Error reading file: ${file.name}`
+          });
+        };
+        
+        // Read the file according to its type
         if (file.type.includes('image/')) {
-          // For images, we'll just note it's an image
-          content = '[This is an image file that needs OCR processing on the server]';
+          // For images, read as data URL
+          reader.readAsDataURL(file);
+        } else if (file.type.includes('pdf') || 
+                  file.type.includes('doc') || 
+                  file.name.endsWith('.txt')) {
+          // For text-like documents
+          reader.readAsText(file);
         } else {
-          // For text documents, read as text
-          content = await file.text();
+          // Default to text for unknown types
+          reader.readAsText(file);
         }
-      } catch (error) {
-        console.error('Error reading file:', error);
-        content = 'Error reading file content';
-      }
-      
-      return {
-        id,
-        name: file.name,
-        size: file.size,
-        type: file.type,
-        content
-      };
+      });
     });
     
-    // Wait for all file processing to complete
-    const files = await Promise.all(filePromises);
-    
-    // Send the processed files back
-    onFileUpload(files);
-    
-    // Reset the input value to allow uploading the same file again
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
+    // Process all files and update state
+    Promise.all(filePromises)
+      .then(files => {
+        // Send uploaded files to parent component
+        onFileUpload(files);
+        
+        // Reset the input to allow uploading the same file again
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+      })
+      .catch(error => {
+        console.error('Error processing files:', error);
+      });
   };
   
   return (

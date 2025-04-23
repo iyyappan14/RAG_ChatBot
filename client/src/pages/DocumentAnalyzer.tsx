@@ -1,5 +1,6 @@
 import DocumentSection from "@/components/DocumentSection";
 import ChatSection from "@/components/ChatSection";
+import FileUploader from "@/components/FileUploader";
 import { useState } from "react";
 import { formatFileSize } from "@/lib/utils";
 import { Link, useLocation } from "wouter";
@@ -113,31 +114,156 @@ export default function DocumentAnalyzer() {
                     e.preventDefault();
                     e.stopPropagation();
                   }}
-                  onDrop={(e) => {
+                  onDrop={async (e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    const files = Array.from(e.dataTransfer.files).map(file => ({
-                      id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
-                      name: file.name,
-                      size: file.size,
-                      type: file.type
-                    }));
+                    
+                    // Process each file and read its contents
+                    const filePromises = Array.from(e.dataTransfer.files).map(file => {
+                      return new Promise<UploadedFile>((resolve) => {
+                        // Create a unique ID for the file
+                        const id = Date.now().toString() + Math.random().toString(36).substr(2, 9);
+                        
+                        // Create file reader
+                        const reader = new FileReader();
+                        
+                        // Set up onload callback
+                        reader.onload = (e) => {
+                          let content = '';
+                          
+                          if (e.target && e.target.result) {
+                            // Handle different file types
+                            if (typeof e.target.result === 'string') {
+                              content = e.target.result;
+                            } else {
+                              // For binary data, convert to string
+                              const bytes = new Uint8Array(e.target.result);
+                              let binary = '';
+                              for (let i = 0; i < bytes.byteLength; i++) {
+                                binary += String.fromCharCode(bytes[i]);
+                              }
+                              content = binary;
+                            }
+                          }
+                          
+                          resolve({
+                            id,
+                            name: file.name,
+                            size: file.size,
+                            type: file.type,
+                            content
+                          });
+                        };
+                        
+                        // Set up error handling
+                        reader.onerror = () => {
+                          console.error('Error reading file:', file.name);
+                          
+                          resolve({
+                            id,
+                            name: file.name,
+                            size: file.size,
+                            type: file.type,
+                            content: `Error reading file: ${file.name}`
+                          });
+                        };
+                        
+                        // Read the file according to its type
+                        if (file.type.includes('image/')) {
+                          // For images, read as data URL
+                          reader.readAsDataURL(file);
+                        } else if (file.type.includes('pdf') || 
+                                  file.type.includes('doc') || 
+                                  file.name.endsWith('.txt')) {
+                          // For text-like documents
+                          reader.readAsText(file);
+                        } else {
+                          // Default to text for unknown types
+                          reader.readAsText(file);
+                        }
+                      });
+                    });
+                    
+                    // Wait for all files to be processed then update the state
+                    const files = await Promise.all(filePromises);
                     handleFileUpload(files);
                   }}
                   onClick={() => {
                     const input = document.createElement('input');
                     input.type = 'file';
                     input.multiple = true;
-                    input.accept = '.pdf,.doc,.docx,.jpg,.jpeg,.png';
-                    input.onchange = (e) => {
+                    input.accept = '.pdf,.doc,.docx,.jpg,.jpeg,.png,.txt';
+                    input.onchange = async (e) => {
                       const fileList = (e.target as HTMLInputElement).files;
                       if (fileList) {
-                        const files = Array.from(fileList).map(file => ({
-                          id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
-                          name: file.name,
-                          size: file.size,
-                          type: file.type
-                        }));
+                        // Process each file and read its contents
+                        const filePromises = Array.from(fileList).map(file => {
+                          return new Promise<UploadedFile>((resolve) => {
+                            // Create a unique ID for the file
+                            const id = Date.now().toString() + Math.random().toString(36).substr(2, 9);
+                            
+                            // Create file reader
+                            const reader = new FileReader();
+                            
+                            // Set up onload callback
+                            reader.onload = (e) => {
+                              let content = '';
+                              
+                              if (e.target && e.target.result) {
+                                // Handle different file types
+                                if (typeof e.target.result === 'string') {
+                                  content = e.target.result;
+                                } else {
+                                  // For binary data, convert to string
+                                  const bytes = new Uint8Array(e.target.result);
+                                  let binary = '';
+                                  for (let i = 0; i < bytes.byteLength; i++) {
+                                    binary += String.fromCharCode(bytes[i]);
+                                  }
+                                  content = binary;
+                                }
+                              }
+                              
+                              resolve({
+                                id,
+                                name: file.name,
+                                size: file.size,
+                                type: file.type,
+                                content
+                              });
+                            };
+                            
+                            // Set up error handling
+                            reader.onerror = () => {
+                              console.error('Error reading file:', file.name);
+                              
+                              resolve({
+                                id,
+                                name: file.name,
+                                size: file.size,
+                                type: file.type,
+                                content: `Error reading file: ${file.name}`
+                              });
+                            };
+                            
+                            // Read the file according to its type
+                            if (file.type.includes('image/')) {
+                              // For images, read as data URL
+                              reader.readAsDataURL(file);
+                            } else if (file.type.includes('pdf') || 
+                                      file.type.includes('doc') || 
+                                      file.name.endsWith('.txt')) {
+                              // For text-like documents
+                              reader.readAsText(file);
+                            } else {
+                              // Default to text for unknown types
+                              reader.readAsText(file);
+                            }
+                          });
+                        });
+                        
+                        // Wait for all files to be processed then update the state
+                        const files = await Promise.all(filePromises);
                         handleFileUpload(files);
                       }
                     };
