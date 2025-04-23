@@ -23,7 +23,7 @@ function Router() {
     id: 1,
     name: 'Abdul Rahman',
     username: 'abdul.rahman',
-    isLoggedIn: true // Set to true for demo purposes
+    isLoggedIn: false // Set to false to show login screen first
   });
   
   const [location] = useLocation();
@@ -49,7 +49,13 @@ function Router() {
         <div className="flex-1 flex items-center justify-center bg-gray-50">
           <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-200 w-full max-w-md">
             <div className="text-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Welcome to ADIB</h2>
+              <div className="flex justify-center mb-4">
+                <div className="flex items-center">
+                  <div className="text-primary font-bold text-3xl mr-2">ADIB</div>
+                  <div className="text-gray-700 text-lg">Rafiq</div>
+                </div>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900">Welcome</h2>
               <p className="text-gray-600 mt-2">Sign in to your account to continue</p>
             </div>
             

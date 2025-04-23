@@ -23,11 +23,6 @@ export default function WelcomePage() {
               Start Conversation
             </div>
           </Link>
-          
-          <button className="bg-white border border-gray-300 text-gray-700 px-6 py-3 rounded-md text-base font-medium hover:bg-gray-50 flex items-center">
-            <LuFileText className="mr-2 text-lg" />
-            Manage Documents
-          </button>
         </div>
         
         {/* Stats cards */}
@@ -174,7 +169,7 @@ export default function WelcomePage() {
         {/* Welcome Message */}
         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 mb-8">
           <p className="text-lg">
-            Welcome, <span className="font-medium">{username}</span>! How can I assist you today with Islamic banking inquiries?
+            Welcome, <span className="font-medium">{username}</span>! How can I assist you today?
           </p>
         </div>
       </main>
