@@ -17,11 +17,11 @@ export default function WelcomePage() {
         
         {/* Action buttons */}
         <div className="flex flex-wrap gap-4 mb-12">
-          <Link to="/analyze">
-            <button className="bg-primary text-white px-6 py-3 rounded-md text-base font-medium hover:bg-primary/90 flex items-center">
+          <Link href="/analyze">
+            <div className="bg-primary text-white px-6 py-3 rounded-md text-base font-medium hover:bg-primary/90 flex items-center cursor-pointer">
               <PiChatCircleText className="mr-2 text-lg" />
               Start Conversation
-            </button>
+            </div>
           </Link>
           
           <button className="bg-white border border-gray-300 text-gray-700 px-6 py-3 rounded-md text-base font-medium hover:bg-gray-50 flex items-center">
@@ -119,10 +119,10 @@ export default function WelcomePage() {
           <p className="text-lg mb-4">
             Welcome, <span className="font-medium">{username}</span>! Ask me anything about Islamic banking principles, products, or compliance requirements.
           </p>
-          <Link to="/analyze">
-            <button className="bg-primary text-white px-6 py-2 rounded-md text-base font-medium hover:bg-primary/90">
+          <Link href="/analyze">
+            <div className="bg-primary text-white px-6 py-2 rounded-md text-base font-medium hover:bg-primary/90 cursor-pointer inline-block">
               Start a New Chat
-            </button>
+            </div>
           </Link>
         </div>
       </main>

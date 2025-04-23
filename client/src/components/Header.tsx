@@ -32,7 +32,7 @@ export default function Header({ user, onLogout }: HeaderProps) {
           
           <nav className="flex space-x-2 items-center">
             <Link href="/">
-              <a className="text-white hover:text-white/80 px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
+              <div className="text-white hover:text-white/80 px-3 py-2 rounded-md text-sm font-medium cursor-pointer">Dashboard</div>
             </Link>
             
             {user?.isLoggedIn ? (
@@ -55,9 +55,9 @@ export default function Header({ user, onLogout }: HeaderProps) {
               </div>
             ) : (
               <Link href="/login">
-                <a className="bg-primary text-white hover:bg-primary/90 px-4 py-2 rounded-md text-sm font-medium">
+                <div className="bg-primary text-white hover:bg-primary/90 px-4 py-2 rounded-md text-sm font-medium cursor-pointer">
                   Login
-                </a>
+                </div>
               </Link>
             )}
           </nav>

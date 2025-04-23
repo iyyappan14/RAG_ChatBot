@@ -21,7 +21,7 @@ function Router() {
     id: 1,
     name: 'Abdul Rahman',
     username: 'abdul.rahman',
-    isLoggedIn: false
+    isLoggedIn: true // Set to true for demo purposes
   });
   
   const [location] = useLocation();
@@ -43,7 +43,7 @@ function Router() {
   if (!user.isLoggedIn && location !== '/login') {
     return (
       <div className="flex flex-col min-h-screen">
-        <Header />
+        <Header user={user} onLogout={handleLogout} />
         <div className="flex-1 flex items-center justify-center bg-gray-50">
           <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-200 w-full max-w-md">
             <div className="text-center mb-6">
@@ -108,7 +108,7 @@ function Router() {
   
   return (
     <div className="flex flex-col min-h-screen">
-      <Header />
+      <Header user={user} onLogout={handleLogout} />
       <Switch>
         <Route path="/" component={WelcomePage} />
         <Route path="/analyze" component={DocumentAnalyzer} />
