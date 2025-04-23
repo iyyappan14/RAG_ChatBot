@@ -4,6 +4,9 @@ import { BiArrowBack } from 'react-icons/bi';
 import { Link } from 'wouter';
 import { LuBookOpen, LuBriefcase, LuFileText } from 'react-icons/lu';
 import { RiArrowDownSLine, RiArrowUpSLine, RiBookReadLine } from 'react-icons/ri';
+import { useMutation } from '@tanstack/react-query';
+import { apiRequest } from '@/lib/queryClient';
+import { useToast } from '@/hooks/use-toast';
 
 interface ChatMessage {
   id: string;
@@ -21,6 +24,8 @@ interface KnowledgeBase {
 }
 
 export default function ChatPage() {
+  const { toast } = useToast();
+  
   // Initial welcome message
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     {
@@ -39,7 +44,7 @@ export default function ChatPage() {
   // Knowledge bases that employees can toggle
   const [knowledgeBases, setKnowledgeBases] = useState<KnowledgeBase[]>([
     {
-      id: 'principles',
+      id: 'islamic-principles',
       name: 'Islamic Banking Principles',
       icon: <LuBookOpen className="text-lg" />,
       description: 'Core concepts and foundations of Islamic finance',
@@ -70,9 +75,34 @@ export default function ChatPage() {
   
   const [showKnowledgeBases, setShowKnowledgeBases] = useState(false);
   const [inputValue, setInputValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // Chat API mutation
+  const chatMutation = useMutation({
+    mutationFn: async ({ messages, knowledgeBase }: { 
+      messages: ChatMessage[],
+      knowledgeBase: string 
+    }) => {
+      const res = await apiRequest('POST', '/api/chat', {
+        messages,
+        knowledgeBase,
+        suggestFollowUpQuestions: true
+      });
+      return await res.json();
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to get response from AI assistant",
+        variant: "destructive"
+      });
+      setIsLoading(false);
+    }
+  });
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (inputValue.trim() === '') return;
+    if (isLoading) return;
     
     // Add user message
     const userMessage: ChatMessage = {
@@ -83,12 +113,40 @@ export default function ChatPage() {
     
     setChatMessages([...chatMessages, userMessage]);
     setInputValue('');
+    setIsLoading(true);
     
-    // Simulate AI response after a short delay
-    setTimeout(() => {
-      const aiResponse = getAIResponseWithSuggestions(inputValue);
-      setChatMessages(prevMessages => [...prevMessages, aiResponse]);
-    }, 1000);
+    // Get active knowledge base
+    const activeKBs = knowledgeBases.filter(kb => kb.active);
+    
+    if (activeKBs.length === 0) {
+      // If no knowledge base is active, show a message
+      setChatMessages(prev => [...prev, {
+        id: Date.now().toString(),
+        type: 'assistant',
+        content: "Please enable at least one knowledge base to get answers to your questions.",
+        suggestedQuestions: []
+      }]);
+      setIsLoading(false);
+      return;
+    }
+    
+    // Use the first active knowledge base for context
+    const primaryKnowledgeBase = activeKBs[0].id;
+    
+    try {
+      const response = await chatMutation.mutateAsync({
+        messages: [...chatMessages, userMessage], 
+        knowledgeBase: primaryKnowledgeBase
+      });
+      
+      if (response.message) {
+        setChatMessages(prev => [...prev, response.message]);
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const toggleKnowledgeBase = (id: string) => {
@@ -97,7 +155,7 @@ export default function ChatPage() {
     ));
   };
 
-  const handleSuggestedQuestion = (question: string) => {
+  const handleSuggestedQuestion = async (question: string) => {
     setInputValue(question);
     // Auto-send the question
     const userMessage: ChatMessage = {
@@ -107,82 +165,43 @@ export default function ChatPage() {
     };
     
     setChatMessages(prev => [...prev, userMessage]);
+    setIsLoading(true);
     
-    // Simulate AI response after a short delay
-    setTimeout(() => {
-      const aiResponse = getAIResponseWithSuggestions(question);
-      setChatMessages(prev => [...prev, aiResponse]);
-    }, 1000);
-  };
-
-  const getAIResponseWithSuggestions = (question: string): ChatMessage => {
-    let content = '';
-    let suggestedQuestions: string[] = [];
+    // Get active knowledge base
+    const activeKBs = knowledgeBases.filter(kb => kb.active);
     
-    // Check which knowledge bases are active
-    const activeKBs = knowledgeBases.filter(kb => kb.active).map(kb => kb.id);
-    const hasActiveKB = activeKBs.length > 0;
-    
-    if (!hasActiveKB) {
-      return {
+    if (activeKBs.length === 0) {
+      // If no knowledge base is active, show a message
+      setChatMessages(prev => [...prev, {
         id: Date.now().toString(),
         type: 'assistant',
         content: "Please enable at least one knowledge base to get answers to your questions.",
         suggestedQuestions: []
-      };
+      }]);
+      setIsLoading(false);
+      return;
     }
     
-    // Mock responses based on keywords in the question
-    if (question.toLowerCase().includes('sukuk') || question.toLowerCase().includes('bond')) {
-      content = "Sukuk are Islamic financial certificates, similar to bonds in Western finance, but structured to comply with Islamic law. Unlike conventional bonds, sukuk are asset-backed securities with partial ownership in a debt, asset, project, business, or investment. They represent undivided shares in the ownership of tangible assets, usufruct, services, or investments in particular projects or special investment activities.";
-      
-      suggestedQuestions = [
-        "What are the different types of Sukuk?",
-        "How are Sukuk different from conventional bonds?",
-        "What are the Shariah requirements for Sukuk?"
-      ];
-    } else if (question.toLowerCase().includes('murabaha') || question.toLowerCase().includes('financing')) {
-      content = "Murabaha is an Islamic financing structure where the seller and buyer agree on the cost and markup of an asset. The financial institution purchases the asset, then sells it to the client at a higher price, with payment typically made in installments. This arrangement complies with Islamic principles by avoiding traditional interest charges, instead deriving profit from the disclosed markup.";
-      
-      suggestedQuestions = [
-        "What are common uses of Murabaha financing?",
-        "How does Murabaha differ from conventional loans?",
-        "What documentation is required for Murabaha?"
-      ];
-    } else if (question.toLowerCase().includes('zakat') || question.toLowerCase().includes('charity') || question.toLowerCase().includes('donate')) {
-      content = "Zakat is a mandatory charitable contribution or alms-giving required of Muslims who meet certain wealth criteria. It's considered one of the Five Pillars of Islam and serves as a mechanism for wealth redistribution to reduce inequality. Generally, one must pay 2.5% of their accumulated wealth annually, though rates vary for different assets like agricultural produce and livestock.";
-      
-      suggestedQuestions = [
-        "How is the 2.5% Zakat rate calculated?",
-        "What assets are exempt from Zakat?",
-        "How does ADIB help customers calculate Zakat?"
-      ];
-    } else if (question.toLowerCase().includes('islamic banking') || question.toLowerCase().includes('principles')) {
-      content = "Islamic banking operates on several key principles: 1) Prohibition of interest (riba), 2) Profit and loss sharing, 3) Prohibition of excessive uncertainty (gharar), 4) Prohibition of gambling and speculation (maysir), and 5) Investments must be in Shariah-compliant assets and activities. These principles ensure that financial transactions align with Islamic ethics and promote social justice.";
-      
-      suggestedQuestions = [
-        "What is the concept of riba in Islamic banking?",
-        "How does profit and loss sharing work?",
-        "What businesses are considered haram for investment?"
-      ];
-    } else {
-      content = "Thank you for your question. In Islamic banking, financial transactions must comply with Shariah principles, which prohibit interest (riba), excessive uncertainty (gharar), and gambling (maysir). This framework promotes ethical and equitable financial practices. Could you provide more details about your specific area of interest so I can offer more targeted information?";
-      
-      suggestedQuestions = [
-        "Tell me about Sukuk (Islamic bonds)",
-        "How does Murabaha financing work?",
-        "What is Zakat and how is it calculated?",
-        "Explain the principles of Islamic banking"
-      ];
-    }
+    // Use the first active knowledge base for context
+    const primaryKnowledgeBase = activeKBs[0].id;
     
-    return {
-      id: Date.now().toString(),
-      type: 'assistant',
-      content,
-      suggestedQuestions
-    };
+    try {
+      const response = await chatMutation.mutateAsync({
+        messages: [...chatMessages, userMessage], 
+        knowledgeBase: primaryKnowledgeBase
+      });
+      
+      if (response.message) {
+        setChatMessages(prev => [...prev, response.message]);
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -309,16 +328,30 @@ export default function ChatPage() {
                   className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
                   placeholder="Type your message here..."
                   rows={1}
+                  disabled={isLoading}
                 />
               </div>
               <button
                 onClick={handleSendMessage}
-                className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 flex items-center justify-center"
+                disabled={isLoading}
+                className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 flex items-center justify-center disabled:bg-gray-300 disabled:cursor-not-allowed"
               >
-                <span>Send</span>
-                <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
+                {isLoading ? (
+                  <div className="flex items-center">
+                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>Processing</span>
+                  </div>
+                ) : (
+                  <>
+                    <span>Send</span>
+                    <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </>
+                )}
               </button>
             </div>
           </div>
