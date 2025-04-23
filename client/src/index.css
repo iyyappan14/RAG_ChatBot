@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --background: 0 0% 97%;
+  --background: 190 65% 75%; /* #90E0EF */
   --foreground: 20 14.3% 4.1%;
   --muted: 60 4.8% 95.9%;
   --muted-foreground: 25 5.3% 44.7%;
@@ -13,9 +13,9 @@
   --card-foreground: 20 14.3% 4.1%;
   --border: 20 5.9% 90%;
   --input: 20 5.9% 90%;
-  --primary: 186 70% 22%; /* ADIB teal color */
+  --primary: 229 88% 57%; /* #315cf2 */
   --primary-foreground: 210 40% 98%;
-  --secondary: 212 100% 15%; /* ADIB deep blue */
+  --secondary: 229 88% 57%; /* #315cf2 */
   --secondary-foreground: 0 0% 100%;
   --accent: 40 100% 50%; /* ADIB gold */
   --accent-foreground: 0 0% 0%;
@@ -49,9 +49,9 @@
   --card-foreground: 0 0% 98%;
   --border: 240 3.7% 15.9%;
   --input: 240 3.7% 15.9%;
-  --primary: 186 70% 22%; /* ADIB teal color */
+  --primary: 229 88% 57%; /* #315cf2 */
   --primary-foreground: 210 40% 98%;
-  --secondary: 212 100% 15%; /* ADIB deep blue */
+  --secondary: 229 88% 57%; /* #315cf2 */
   --secondary-foreground: 0 0% 100%;
   --accent: 40 100% 50%; /* ADIB gold */
   --accent-foreground: 0 0% 0%;
@@ -92,5 +92,5 @@
 }
 
 .chat-input:focus {
-  @apply outline-none border-primary shadow-[0_0_0_3px_rgba(0,122,135,0.2)];
+  @apply outline-none border-primary shadow-[0_0_0_3px_rgba(49,92,242,0.2)];
 }
