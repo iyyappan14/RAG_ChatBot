@@ -13,11 +13,11 @@
   --card-foreground: 20 14.3% 4.1%;
   --border: 20 5.9% 90%;
   --input: 20 5.9% 90%;
-  --primary: 186 100% 26.7%;
+  --primary: 186 70% 22%; /* ADIB teal color */
   --primary-foreground: 210 40% 98%;
-  --secondary: 218 55.9% 18.4%;
+  --secondary: 212 100% 15%; /* ADIB deep blue */
   --secondary-foreground: 0 0% 100%;
-  --accent: 44 92% 49%;
+  --accent: 40 100% 50%; /* ADIB gold */
   --accent-foreground: 0 0% 0%;
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 60 9.1% 97.8%;
@@ -49,11 +49,11 @@
   --card-foreground: 0 0% 98%;
   --border: 240 3.7% 15.9%;
   --input: 240 3.7% 15.9%;
-  --primary: 186 100% 26.7%;
+  --primary: 186 70% 22%; /* ADIB teal color */
   --primary-foreground: 210 40% 98%;
-  --secondary: 218 55.9% 18.4%;
+  --secondary: 212 100% 15%; /* ADIB deep blue */
   --secondary-foreground: 0 0% 100%;
-  --accent: 44 92% 49%;
+  --accent: 40 100% 50%; /* ADIB gold */
   --accent-foreground: 0 0% 0%;
   --destructive: 0 62.8% 30.6%;
   --destructive-foreground: 0 0% 98%;

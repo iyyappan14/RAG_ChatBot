@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Upload } from "lucide-react";
+import { UploadCloud } from "lucide-react";
 import { UploadedFile } from "@/pages/DocumentAnalyzer";
 import { formatFileSize } from "@/lib/utils";
 
@@ -74,7 +74,9 @@ export default function FileUploader({ onFileUpload }: FileUploaderProps) {
   return (
     <div className="mb-6">
       <div 
-        className={`upload-zone rounded-lg p-6 cursor-pointer ${isDragging ? 'drag-over' : ''}`}
+        className={`upload-zone rounded-lg p-6 cursor-pointer border-2 border-dashed 
+          ${isDragging ? 'border-primary bg-primary/5' : 'border-gray-200'} 
+          hover:border-primary hover:bg-primary/5 transition-colors duration-150`}
         onClick={handleClick}
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
@@ -82,12 +84,14 @@ export default function FileUploader({ onFileUpload }: FileUploaderProps) {
         onDrop={handleDrop}
       >
         <div className="text-center">
-          <i className="ri-upload-cloud-2-line text-3xl text-primary mb-2"></i>
+          <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+            <UploadCloud className="h-7 w-7 text-primary" />
+          </div>
           <p className="text-gray-600 mb-1">Drag files here or</p>
           <button className="text-primary font-medium hover:text-primary/80 focus:outline-none">
             Browse files
           </button>
-          <p className="text-gray-500 text-sm mt-2">PDF, Word, or Image files</p>
+          <p className="text-gray-500 text-xs mt-2">PDF, Word, or Image files</p>
           <input 
             type="file" 
             className="hidden" 
