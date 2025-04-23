@@ -8,8 +8,21 @@ import { useQuery } from '@tanstack/react-query';
 export default function WelcomePage() {
   const username = "Abdul Rahman";
   
-  // Fetch stats data from API
-  const { data: statsData, isLoading, error } = useQuery({
+  // Define the Stats interface
+  interface Stats {
+    knowledgeBases: Array<{
+      id: string;
+      name: string;
+      description: string;
+      documentCount: number;
+    }>;
+    documentCount: number;
+    questionCount: number;
+    accuracyRate: number;
+  }
+  
+  // Fetch stats data from API with the correct type
+  const { data: statsData, isLoading, error } = useQuery<Stats>({
     queryKey: ['/api/stats'],
     refetchInterval: 10000, // Refresh every 10 seconds to keep the counts updated
   });
@@ -108,11 +121,16 @@ export default function WelcomePage() {
         {/* Knowledge Base Cards */}
         <h2 className="text-2xl font-bold mb-6">Knowledge Bases</h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-12">
-          {knowledgeBases.map((kb, index) => {
+          {knowledgeBases.map((kb: {
+            id: string;
+            name: string;
+            description: string;
+            documentCount: number;
+          }, index: number) => {
             // Different colors for different knowledge bases
             const bgColors = ['bg-black/5', 'bg-amber-50', 'bg-green-50', 'bg-indigo-50'];
             const textColors = ['text-primary', 'text-amber-500', 'text-green-500', 'text-indigo-500'];
-            const icons = [<RiBookReadLine className="text-2xl" />, <LuFileText className="text-2xl" />, <RiPieChartLine className="text-2xl" />, <PiChatCircleText className="text-2xl" />];
+            const icons = [<RiBookReadLine key="icon1" className="text-2xl" />, <LuFileText key="icon2" className="text-2xl" />, <RiPieChartLine key="icon3" className="text-2xl" />, <PiChatCircleText key="icon4" className="text-2xl" />];
             
             return (
               <div key={kb.id} className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow">

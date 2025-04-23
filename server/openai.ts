@@ -48,6 +48,14 @@ const mockResponses: Record<string, { content: string, suggestedQuestions: strin
       "What documentation is required for Murabaha?"
     ]
   },
+  "rag": {
+    content: "RAG (Retrieval Augmented Generation) is a technique used in AI systems like ADIB Rafiq that combines information retrieval with generative AI. When you ask a question, the system first retrieves relevant information from a knowledge base (like Islamic banking documents), then uses this retrieved information to generate an accurate response. This approach ensures answers are more accurate, up-to-date, and grounded in your bank's specific documents and policies.",
+    suggestedQuestions: [
+      "How does RAG improve AI responses?",
+      "What types of documents can be used with RAG?",
+      "How is RAG implemented in banking systems?"
+    ]
+  },
   "sukuk": {
     content: "Sukuk are Islamic financial certificates, similar to bonds in Western finance, but structured to comply with Islamic law. Unlike conventional bonds, sukuk are asset-backed securities with partial ownership in a debt, asset, project, business, or investment. They represent undivided shares in the ownership of tangible assets, usufruct, services, or investments in particular projects or special investment activities.",
     suggestedQuestions: [
@@ -161,6 +169,8 @@ function getMockResponse(messages: ChatMessage[], systemPrompt: string): ChatCom
     mockResponse = mockResponses.sukuk;
   } else if (question.includes('zakat') || question.includes('charity')) {
     mockResponse = mockResponses.zakat;
+  } else if (question.includes('rag') || question.includes('retrieval')) {
+    mockResponse = mockResponses.rag;
   } else {
     mockResponse = mockResponses.default;
   }
