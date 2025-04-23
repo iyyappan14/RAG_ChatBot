@@ -8,6 +8,47 @@ import {
 } from "./openai";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Stats API endpoint
+  app.get('/api/stats', async (req: Request, res: Response) => {
+    try {
+      // Get statistics from storage
+      const knowledgeBases = await storage.getKnowledgeBases();
+      const documentCount = await storage.getDocumentCount();
+      const questionCount = await storage.getDailyQuestionCount();
+      
+      res.json({
+        knowledgeBases,
+        documentCount,
+        questionCount,
+        // This is a static value for demonstration
+        accuracyRate: 97.5
+      });
+    } catch (error) {
+      console.error('Error in /api/stats:', error);
+      res.status(500).json({ error: 'Failed to get statistics' });
+    }
+  });
+  
+  // Track message for statistics
+  const trackMessage = async (message: any) => {
+    try {
+      if (!message) return;
+      
+      const currentTime = new Date().toISOString();
+      
+      // Store in memory for stats tracking
+      await storage.createChatMessage({
+        content: message.content,
+        type: message.type,
+        userId: 1, // Default user ID for demo
+        documentId: null as any, // Set to null
+        createdAt: currentTime
+      });
+    } catch (error) {
+      console.error('Error tracking message:', error);
+    }
+  };
+
   // Chat API endpoint for AI assistant
   app.post('/api/chat', async (req: Request, res: Response) => {
     try {
@@ -44,14 +85,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
         suggestFollowUpQuestions
       });
       
+      // Create the message object
+      const assistantMessage = {
+        id: Date.now().toString(),
+        type: 'assistant',
+        content: result.content,
+        suggestedQuestions: result.suggestedQuestions
+      };
+      
+      // Track this message for statistics
+      await trackMessage(assistantMessage);
+      
+      // Get the last user message and track it too
+      if (messages.length > 0) {
+        const lastMessage = messages[messages.length - 1];
+        if (lastMessage.type === 'user') {
+          await trackMessage(lastMessage);
+        }
+      }
+      
       // Return the response
       res.json({
-        message: {
-          id: Date.now().toString(),
-          type: 'assistant',
-          content: result.content,
-          suggestedQuestions: result.suggestedQuestions
-        }
+        message: assistantMessage
       });
     } catch (error) {
       console.error('Error in /api/chat:', error);
@@ -62,7 +117,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Document analysis endpoint
   app.post('/api/analyze-document', async (req: Request, res: Response) => {
     try {
-      const { documentText, query } = req.body;
+      const { documentText, query, documentInfo } = req.body;
       
       if (!documentText) {
         return res.status(400).json({ error: 'Document text is required' });
@@ -71,10 +126,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Analyze the document
       const analysis = await analyzeDocument(documentText, query);
       
+      // If document info is provided, store it
+      const documentId = Date.now().toString();
+      if (documentInfo) {
+        try {
+          const currentTime = new Date().toISOString();
+          
+          await storage.createDocument({
+            name: documentInfo.name || 'Document',
+            type: documentInfo.type || 'text/plain',
+            size: documentInfo.size || documentText.length,
+            userId: 1 as any, // Default user ID for demo
+            createdAt: currentTime
+          });
+        } catch (storageError) {
+          console.error('Error storing document info:', storageError);
+        }
+      }
+      
       // Return the analysis
       res.json({
         analysis,
-        documentId: Date.now().toString()
+        documentId
       });
     } catch (error) {
       console.error('Error in /api/analyze-document:', error);
