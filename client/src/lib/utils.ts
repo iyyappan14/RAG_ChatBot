@@ -29,14 +29,14 @@ export function getFileTypeIcon(fileName: string): {
   } else if (['doc', 'docx'].includes(extension)) {
     return {
       icon: 'ri-file-word-line',
-      bgColor: 'bg-blue-100',
-      iconColor: 'text-blue-600'
+      bgColor: 'bg-secondary/10',
+      iconColor: 'text-secondary'
     };
   } else if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg'].includes(extension)) {
     return {
       icon: 'ri-image-line',
-      bgColor: 'bg-green-100',
-      iconColor: 'text-green-600'
+      bgColor: 'bg-accent/10',
+      iconColor: 'text-accent'
     };
   }
   
