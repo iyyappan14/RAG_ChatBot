@@ -22,18 +22,26 @@ export default function Header({ user, onLogout }: HeaderProps) {
           <div className="flex items-center">
             <Link href="/">
               <div className="flex items-center cursor-pointer">
-                <img src={adibLogoPng} alt="ADIB Logo" className="h-10 mr-3" />
-                <div className="hidden md:block h-6 w-px bg-white/20 mx-3"></div>
-                <h1 className="hidden md:block text-xl font-medium text-white">Islamic Banking</h1>
-                <span className="hidden md:block text-xs bg-white/20 text-white px-2 py-0.5 rounded ml-2">AI Knowledge Assistant</span>
+                <img src={adibLogoPng} alt="ADIB Logo" className="h-10" />
+                <span className="hidden md:block text-sm bg-white/20 text-white px-2 py-0.5 rounded ml-2">AI Knowledge Assistant</span>
               </div>
             </Link>
           </div>
           
           <nav className="flex space-x-2 items-center">
-            <Link href="/">
-              <div className="text-white hover:text-white/80 px-3 py-2 rounded-md text-sm font-medium cursor-pointer">Dashboard</div>
-            </Link>
+            <div className="relative mr-4">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <svg className="w-4 h-4 text-white/60" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              </div>
+              <input 
+                type="search" 
+                className="bg-white/10 border-none text-white text-sm rounded-lg block w-[260px] pl-10 p-2 focus:ring-primary focus:border-primary placeholder-white/60" 
+                placeholder="Search knowledge base..." 
+              />
+            </div>
             
             {user?.isLoggedIn ? (
               <div className="relative group">

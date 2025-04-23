@@ -115,15 +115,67 @@ export default function WelcomePage() {
         
         {/* Get Started Section */}
         <h2 className="text-2xl font-bold mb-6">Get Started</h2>
-        <div className="bg-primary/5 p-6 rounded-lg border border-primary/10 mb-8">
-          <p className="text-lg mb-4">
-            Welcome, <span className="font-medium">{username}</span>! Ask me anything about Islamic banking principles, products, or compliance requirements.
-          </p>
-          <Link href="/analyze">
-            <div className="bg-primary text-white px-6 py-2 rounded-md text-base font-medium hover:bg-primary/90 cursor-pointer inline-block">
-              Start a New Chat
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          {/* Ask Questions Section */}
+          <div className="bg-primary/5 p-6 rounded-lg border border-primary/10 flex flex-col h-full">
+            <div className="flex items-center mb-4">
+              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary mr-3">
+                <PiChatCircleText className="text-xl" />
+              </div>
+              <h3 className="text-lg font-medium">Ask Questions</h3>
             </div>
-          </Link>
+            <p className="text-gray-600 mb-5 flex-grow">
+              Chat with our AI to get instant answers about Islamic banking principles and compliance requirements.
+            </p>
+            <Link href="/analyze">
+              <div className="bg-primary text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary/90 cursor-pointer inline-block">
+                Start a New Chat
+              </div>
+            </Link>
+          </div>
+          
+          {/* Upload Documents Section */}
+          <div className="bg-primary/5 p-6 rounded-lg border border-primary/10 flex flex-col h-full">
+            <div className="flex items-center mb-4">
+              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary mr-3">
+                <LuFileText className="text-xl" />
+              </div>
+              <h3 className="text-lg font-medium">Upload Documents</h3>
+            </div>
+            <p className="text-gray-600 mb-5 flex-grow">
+              Upload financial documents and contracts to analyze them with our AI assistant.
+            </p>
+            <Link href="/analyze">
+              <div className="bg-primary text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary/90 cursor-pointer inline-block">
+                Upload Documents
+              </div>
+            </Link>
+          </div>
+          
+          {/* Explore Topics Section */}
+          <div className="bg-primary/5 p-6 rounded-lg border border-primary/10 flex flex-col h-full">
+            <div className="flex items-center mb-4">
+              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary mr-3">
+                <RiBookReadLine className="text-xl" />
+              </div>
+              <h3 className="text-lg font-medium">Explore Topics</h3>
+            </div>
+            <p className="text-gray-600 mb-5 flex-grow">
+              Browse through our knowledge base to learn about Islamic finance principles and best practices.
+            </p>
+            <Link href="/analyze">
+              <div className="bg-primary text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary/90 cursor-pointer inline-block">
+                Browse Knowledge Base
+              </div>
+            </Link>
+          </div>
+        </div>
+        
+        {/* Welcome Message */}
+        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 mb-8">
+          <p className="text-lg">
+            Welcome, <span className="font-medium">{username}</span>! How can I assist you today with Islamic banking inquiries?
+          </p>
         </div>
       </main>
     </div>
