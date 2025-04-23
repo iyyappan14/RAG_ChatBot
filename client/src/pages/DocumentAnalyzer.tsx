@@ -1,8 +1,9 @@
-import Header from "@/components/Header";
 import DocumentSection from "@/components/DocumentSection";
 import ChatSection from "@/components/ChatSection";
 import { useState } from "react";
 import { formatFileSize } from "@/lib/utils";
+import { Link } from "wouter";
+import { BiArrowBack } from "react-icons/bi";
 
 export interface UploadedFile {
   id: string;
@@ -75,7 +76,24 @@ export default function DocumentAnalyzer() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header />
+      {/* Simple header with logo and nav */}
+      <header className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+          <Link href="/">
+            <div className="flex items-center cursor-pointer">
+              <div className="text-primary font-bold text-xl mr-3">ADIB</div>
+              <div className="text-gray-700 text-sm">Rafiq AI Assistant</div>
+            </div>
+          </Link>
+          
+          <Link href="/">
+            <div className="flex items-center text-primary hover:text-primary/80 cursor-pointer">
+              <BiArrowBack className="mr-1" />
+              <span className="text-sm">Back to Dashboard</span>
+            </div>
+          </Link>
+        </div>
+      </header>
       <div className="flex-1 w-full">
         <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {currentScreen === 'upload' ? (

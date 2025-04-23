@@ -8,6 +8,7 @@ import NotFound from "@/pages/not-found";
 import DocumentAnalyzer from "@/pages/DocumentAnalyzer";
 import WelcomePage from "@/pages/welcome-page";
 import ChatPage from "@/pages/chat-page";
+import KnowledgeBase from "@/pages/knowledge-base";
 import Header from "@/components/Header";
 
 type User = {
@@ -114,6 +115,7 @@ function Router() {
         <Route path="/" component={WelcomePage} />
         <Route path="/analyze" component={DocumentAnalyzer} />
         <Route path="/chat" component={ChatPage} />
+        <Route path="/knowledge-base" component={KnowledgeBase} />
         <Route path="/login" component={() => <WelcomePage />} />
         <Route component={NotFound} />
       </Switch>

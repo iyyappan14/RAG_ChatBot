@@ -163,7 +163,7 @@ export default function WelcomePage() {
             <p className="text-gray-600 mb-5 flex-grow">
               Browse through our knowledge base to learn about Islamic finance principles and best practices.
             </p>
-            <Link href="/analyze">
+            <Link href="/knowledge-base">
               <div className="bg-primary text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary/90 cursor-pointer inline-block">
                 Browse Knowledge Base
               </div>
