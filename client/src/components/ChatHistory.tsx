@@ -15,15 +15,15 @@ export default function ChatHistory({ messages }: ChatHistoryProps) {
   }, [messages]);
   
   return (
-    <div className="flex-1 overflow-y-auto p-5 space-y-6" style={{ maxHeight: '500px' }}>
+    <div className="flex-1 overflow-y-auto p-4 space-y-4" style={{ maxHeight: '400px' }}>
       {messages.map((message) => (
         <div 
           key={message.id} 
           className={`flex items-start ${message.type === 'user' ? 'justify-end' : ''}`}
         >
           {message.type === 'assistant' && (
-            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white mr-3 flex-shrink-0">
-              <Bot className="h-4 w-4" />
+            <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center text-white mr-2 flex-shrink-0">
+              <Bot className="h-3.5 w-3.5" />
             </div>
           )}
           
@@ -32,21 +32,21 @@ export default function ChatHistory({ messages }: ChatHistoryProps) {
               ${message.type === 'assistant' 
                 ? 'bg-gray-50 border border-gray-100' 
                 : 'bg-secondary/10 border border-secondary/10'}
-              rounded-lg p-4 max-w-3xl shadow-sm
+              rounded-lg p-3 max-w-[85%] shadow-sm
             `}
           >
             <p 
               className={`
                 ${message.type === 'assistant' ? 'text-gray-700' : 'text-gray-800'}
-                text-sm
+                text-xs
               `} 
               dangerouslySetInnerHTML={{ __html: message.content }}
             ></p>
           </div>
           
           {message.type === 'user' && (
-            <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-white ml-3 flex-shrink-0">
-              <User className="h-4 w-4" />
+            <div className="w-7 h-7 rounded-full bg-secondary flex items-center justify-center text-white ml-2 flex-shrink-0">
+              <User className="h-3.5 w-3.5" />
             </div>
           )}
         </div>

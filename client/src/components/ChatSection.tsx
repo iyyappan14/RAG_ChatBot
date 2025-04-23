@@ -2,7 +2,6 @@ import ChatHistory from "@/components/ChatHistory";
 import ChatInput from "@/components/ChatInput";
 import { getMockResponse } from "@/lib/utils";
 import { ChatMessage } from "@/pages/DocumentAnalyzer";
-import { BrainCog } from "lucide-react";
 
 interface ChatSectionProps {
   chatMessages: ChatMessage[];
@@ -35,20 +34,9 @@ export default function ChatSection({ chatMessages, addChatMessage }: ChatSectio
   };
   
   return (
-    <div className="lg:w-2/3">
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 h-full flex flex-col overflow-hidden">
-        <div className="bg-secondary text-white p-4 flex items-center">
-          <BrainCog className="w-5 h-5 mr-2" />
-          <div>
-            <h2 className="text-lg font-medium">Document Analysis</h2>
-            <p className="text-xs text-white/80">Ask questions about your uploaded documents</p>
-          </div>
-        </div>
-        
-        <ChatHistory messages={chatMessages} />
-        
-        <ChatInput onSendQuestion={handleSendQuestion} />
-      </div>
+    <div className="flex flex-col h-full">
+      <ChatHistory messages={chatMessages} />
+      <ChatInput onSendQuestion={handleSendQuestion} />
     </div>
   );
 }
