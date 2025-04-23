@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import DocumentAnalyzer from "@/pages/DocumentAnalyzer";
 import WelcomePage from "@/pages/welcome-page";
+import ChatPage from "@/pages/chat-page";
 import Header from "@/components/Header";
 
 type User = {
@@ -112,6 +113,7 @@ function Router() {
       <Switch>
         <Route path="/" component={WelcomePage} />
         <Route path="/analyze" component={DocumentAnalyzer} />
+        <Route path="/chat" component={ChatPage} />
         <Route path="/login" component={() => <WelcomePage />} />
         <Route component={NotFound} />
       </Switch>

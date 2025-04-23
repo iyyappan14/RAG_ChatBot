@@ -17,7 +17,7 @@ export default function WelcomePage() {
         
         {/* Action buttons */}
         <div className="flex flex-wrap gap-4 mb-12">
-          <Link href="/analyze">
+          <Link href="/chat">
             <div className="bg-primary text-white px-6 py-3 rounded-md text-base font-medium hover:bg-primary/90 flex items-center cursor-pointer">
               <PiChatCircleText className="mr-2 text-lg" />
               Start Conversation
@@ -127,7 +127,7 @@ export default function WelcomePage() {
             <p className="text-gray-600 mb-5 flex-grow">
               Chat with our AI to get instant answers about Islamic banking principles and compliance requirements.
             </p>
-            <Link href="/analyze">
+            <Link href="/chat">
               <div className="bg-primary text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary/90 cursor-pointer inline-block">
                 Start a New Chat
               </div>
