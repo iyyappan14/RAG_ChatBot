@@ -159,18 +159,31 @@ function getMockResponse(messages: ChatMessage[], systemPrompt: string): ChatCom
   });
   const question = lastUserMessage ? lastUserMessage.content.toLowerCase() : '';
   
+  // Normalize question for more reliable matching
+  // Log for debugging
+  console.log('Received question:', question);
+  
   // Choose mock response based on keywords in the question
   let mockResponse;
-  if (question.includes('principle') || question.includes('islamic banking')) {
-    mockResponse = mockResponses.principles;
-  } else if (question.includes('murabaha') || question.includes('financing')) {
-    mockResponse = mockResponses.murabaha;
-  } else if (question.includes('sukuk') || question.includes('bond')) {
-    mockResponse = mockResponses.sukuk;
-  } else if (question.includes('zakat') || question.includes('charity')) {
-    mockResponse = mockResponses.zakat;
-  } else if (question.includes('rag') || question.includes('retrieval')) {
+  
+  // Check for RAG first - this is top priority since we're having issues with it
+  if (question.match(/\brag\b/i) || 
+      question.match(/\bretrieval\b/i) ||
+      question.match(/retrieval augmented/i) ||
+      question.match(/what is rag/i) ||
+      question.match(/what.*rag/i)) {
+    console.log('Matched RAG question pattern');
     mockResponse = mockResponses.rag;
+  }
+  // Then check for other patterns
+  else if (question.match(/principle/i) || question.match(/islamic banking/i)) {
+    mockResponse = mockResponses.principles;
+  } else if (question.match(/murabaha/i) || question.match(/financing/i)) {
+    mockResponse = mockResponses.murabaha;
+  } else if (question.match(/sukuk/i) || question.match(/bond/i)) {
+    mockResponse = mockResponses.sukuk;
+  } else if (question.match(/zakat/i) || question.match(/charity/i)) {
+    mockResponse = mockResponses.zakat;
   } else {
     mockResponse = mockResponses.default;
   }
