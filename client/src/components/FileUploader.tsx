@@ -55,14 +55,40 @@ export default function FileUploader({ onFileUpload }: FileUploaderProps) {
     }
   };
   
-  const processFiles = (fileList: FileList) => {
-    const files: UploadedFile[] = Array.from(fileList).map((file) => ({
-      id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
-      name: file.name,
-      size: file.size,
-      type: file.type
-    }));
+  const processFiles = async (fileList: FileList) => {
+    const filePromises = Array.from(fileList).map(async (file) => {
+      // Create a unique ID for the file
+      const id = Date.now().toString() + Math.random().toString(36).substr(2, 9);
+      
+      // Read the file content
+      let content = '';
+      
+      try {
+        if (file.type.includes('image/')) {
+          // For images, we'll just note it's an image
+          content = '[This is an image file that needs OCR processing on the server]';
+        } else {
+          // For text documents, read as text
+          content = await file.text();
+        }
+      } catch (error) {
+        console.error('Error reading file:', error);
+        content = 'Error reading file content';
+      }
+      
+      return {
+        id,
+        name: file.name,
+        size: file.size,
+        type: file.type,
+        content
+      };
+    });
     
+    // Wait for all file processing to complete
+    const files = await Promise.all(filePromises);
+    
+    // Send the processed files back
     onFileUpload(files);
     
     // Reset the input value to allow uploading the same file again

@@ -10,6 +10,7 @@ export interface UploadedFile {
   name: string;
   size: number;
   type: string;
+  content?: string; // Add content field for document text
 }
 
 export interface ChatMessage {
@@ -284,7 +285,8 @@ export default function DocumentAnalyzer() {
                   <div className="flex-1 overflow-auto">
                     <ChatSection 
                       chatMessages={chatMessages} 
-                      addChatMessage={addChatMessage} 
+                      addChatMessage={addChatMessage}
+                      uploadedFiles={uploadedFiles}
                     />
                   </div>
                 </div>
